@@ -1,0 +1,53 @@
+# ตั้งค่าระบบ Trap Hunter Bot
+# ปรับค่าได้อิสระ - ทุกค่ามีคำอธิบายกำกับ
+
+assets:
+  BTCUSDT:
+    enabled: true
+    source: binance               # ข้อมูลจาก Binance public API (ฟรี ไม่ต้องมี key)
+    binance_host: https://data-api.binance.vision
+    symbol: BTCUSDT
+    trigger_tf: 15m               # กราฟหลักที่ใช้หาจังหวะ (ไทม์เฟรมเข้าไม้)
+    htf: 1h                       # กราฟใหญ่ที่ใช้กำหนดทิศทางรวม
+    delta_enabled: true           # Binance มีข้อมูลแรงซื้อ-ขายจริง (taker buy volume)
+    round_step: 1000              # ตัวเลขสวยที่ฝูงชนจ้อง (เช่น 60000, 61000)
+
+  XAUUSD:
+    enabled: true
+    source: yfinance              # ฟิวเจอร์สทอง COMEX (GC=F) ฟรี
+    yf_symbol: GC=F
+    trigger_tf: 15m
+    htf: 1h
+    delta_enabled: false          # ทองไม่มีข้อมูลแรงซื้อ-ขายจริงฟรีๆ -> ใช้กฎ fast reclaim แทน
+    round_step: 10                # ตัวเลขสวยทอง (เช่น 3550, 3560)
+
+engine:
+  lookback_bars: 300              # จำนวนเทียนย้อนหลังที่ใช้สร้างแผนที่กับดัก
+  volume_mult: 1.8                # วอลลุ่มเทียนกับดักต้องมากกว่าค่าเฉลี่ย 20 แท่งอย่างน้อยกี่เท่า
+  reclaim_window: 3               # ต้องปิดเทียนกลับเข้าโซนภายในกี่แท่ง (เร็ว = ของจริง)
+  wick_min_ratio: 0.50            # ไส้เทียนต้องยาวอย่างน้อย 50% ของช่วงเทียน ถึงนับเป็นตบหน้า
+  sl_atr_mult: 0.25               # SL วางเลยไส้สุดท้ายออกไป 0.25 เท่าของ ATR
+  vol_guard_atr: 3.5              # เทียนกับดักใหญ่กว่า 3.5 ATR = น่าจะเกิดจากข่าว ข้ามไป
+  min_rr_tp2: 1.5                 # ยอมส่งสัญญาณเมื่อ TP2 ไกลอย่างน้อย 1.5R เท่านั้น
+  allow_counter_trend: false      # ห้าม sweep สวนกราฟใหญ่ (แม้จะเป็นกับดักใหญ่)
+  eq_tolerance_atr: 0.12          # จุดสูง/ต่ำห่างกันไม่เกิน 0.12 ATR ถือว่า "เท่ากัน"
+  min_touches_major: 2            # จุดสัมผัสขั้นต่ำที่จะถือเป็นกับดัก (กอง SL ต้องมี 2 กองขึ้น)
+  cooldown_hours: 2               # กันส่งการ์ด "จังหวะเดิม" ซ้ำ (จังหวะหนึ่งยังสดในหน้าต่างตรวจจับ ~1.5 ชม.)
+                                  # นี่คือกันซ้ำ ไม่ใช่การจำกัดจำนวน - จังหวะใหม่ที่ไหนก็ยิงได้ทันที
+  symbol_cooldown_hours: 0        # 0 = ปิด - แต่ละระดับกับดักนับเป็นไม้แยกกันหมด (โหมดไม่จำกัด)
+  max_signals_per_day: 999        # ไม่จำกัดจำนวนต่อวัน - คุณภาพยังถูกคุมด้วยชั้นยืนยันครบทุกชั้นเสมอ
+
+  regime:                         # ความฉลาดปรับตัว: วัดสภาพตลาดแล้วปรับเกณฑ์กรองให้พอดีอัตโนมัติ (regime.py)
+    enabled: true
+    quiet_ratio: 0.70             # ATR 1 ชม. ต่ำกว่า 0.70 เท่าของค่ากลาง = ตลาดเงียบ (คลายเกณฑ์เล็กน้อย)
+    volatile_ratio: 1.50          # สูงกว่า 1.50 เท่า = ผันผวนแรง (ยกเกณฑ์ทุกชั้นให้เข้มขึ้น)
+
+ai:
+  enabled: true                      # ชั้น AI ตรวจซ้ำ - ตื่นเฉพาะตอนมีสัญญาณเท่านั้น จึงกินเครดิตน้อยมาก
+  base_url: https://openrouter.ai/api/v1   # เรียกผ่าน OpenRouter (คีย์อยู่ที่ GitHub Secret: OPENROUTER_API_KEY)
+  model: openai/gpt-4o-mini          # เร็ว ถูก ภาษาไทยลื่น - ค่าเฉลี่ยเดือนละไม่กี่เซนต์
+                                     # อยากใช้ฟรี 0 บาท เปลี่ยนเป็น: google/gemini-2.0-flash-exp:free
+                                     # หรือ: deepseek/deepseek-chat-v3-0324:free (ดูราคาที่ openrouter.ai/models)
+
+telegram:
+  parse_mode: HTML
