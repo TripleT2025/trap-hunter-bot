@@ -12,10 +12,20 @@ import argparse
 import numpy as np
 
 from trapbot.config import load_config
-from trapbot.data import DISPLAY_NAMES, fetch_daily_data, fetch_htf_data, fetch_trigger_data
+from trapbot.data import fetch_daily_data, fetch_htf_data, fetch_trigger_data
 from trapbot.detector import detect
 from trapbot.liquidity import build_levels
 from trapbot.signal import build_signal
+
+DISPLAY_NAMES = {
+    "BTCUSDT": "BTC/USDT",
+    "XAUUSD": "ทองคำ (XAUUSD)",
+    "XAGUSD": "เงิน (XAGUSD)",
+    "SOLUSDT": "Solana (SOL/USDT)",
+    "XRPUSDT": "XRP/USDT",
+    "WTIUSD": "น้ำมันดิบ (WTI)",
+    "NAS100": "NAS100 (NQ=F)",
+}
 
 
 def evaluate_outcome(df, sig, entry_idx_closed):
