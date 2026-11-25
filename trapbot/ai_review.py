@@ -40,6 +40,37 @@ def _extract_json(content: str) -> dict:
     raise ValueError("ไม่พบ JSON ในคำตอบของโมเดล")
 
 
+def ai_text(cfg: dict, prompt: str, max_tokens: int = 350, temperature: float = 0.4) -> str | None:
+    """เรียกโมเดลแบบข้อความธรรมดา (ใช้กับสรุปเช้า/รายงานสัปดาห์) - ล้มคืน None เสมอ"""
+    api_key = cfg.get("api_key", "") or get_api_key()
+    if not api_key:
+        return None
+    try:
+        url = f"{cfg.get('base_url', 'https://openrouter.ai/api/v1').rstrip('/')}/chat/completions"
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+            "HTTP-Referer": "https://github.com/trap-hunter-bot",
+            "X-Title": "Trap Hunter Bot",
+        }
+        r = requests.post(
+            url,
+            headers=headers,
+            json={
+                "model": cfg.get("model", "openai/gpt-4o-mini"),
+                "messages": [{"role": "user", "content": prompt}],
+                "temperature": temperature,
+                "max_tokens": max_tokens,
+            },
+            timeout=60,
+        )
+        r.raise_for_status()
+        return str(r.json()["choices"][0]["message"]["content"]).strip()
+    except Exception as e:
+        print(f"[ai_review] ai_text เรียกไม่สำเร็จ ({e.__class__.__name__}) - คืน None", file=sys.stderr)
+        return None
+
+
 def review_and_rewrite(cfg: dict, sig) -> tuple[bool, str]:
     """คืน (อนุมัติหรือไม่, เหตุผลภาษาไทยฉบับสุดท้าย)"""
     if not cfg.get("enabled"):

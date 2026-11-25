@@ -8,9 +8,11 @@ def build_reason(sig) -> str:
     parts = []
     direction_th = "แทงหลอกทะลุแนวรับ" if sig.side == "BUY" else "ดันหลอกทะลุแนวต้าน"
 
+    kind_th = _kind_th(sig.level_kind)
+    note = sig.level_note if sig.level_note and sig.level_note != kind_th else ""
     parts.append(
-        f"ราคา{direction_th}ที่ระดับ{sig.level_note + ' ' if sig.level_note else ''}"
-        f"{_kind_th(sig.level_kind)} (จุดที่ SL รายย่อยกองอยู่)"
+        f"ราคา{direction_th}ที่ระดับ{note + ' ' if note else ''}"
+        f"{kind_th} (จุดที่ SL รายย่อยกองอยู่)"
     )
     if ex.get("wick_pct") is not None and ex.get("wick_pct", 0) >= 50:
         parts.append(f"ไส้เทียนยาวถึง {ex['wick_pct']}% ของแท่ง")
