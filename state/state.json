@@ -3,10 +3,15 @@
   "BTCUSDT|SELL|59710.95": "2026-11-25T01:10:57.998623+00:00",
   "BTCUSDT|SELL|59241.88": "2026-11-25T02:22:54.026492+00:00",
   "XAGUSD|SELL|41.00": "2026-11-25T02:23:06.983390+00:00",
-  "XRPUSDT|SELL|0.92": "2026-11-25T05:39:12.751773+00:00"
+  "XRPUSDT|SELL|0.92": "2026-11-25T05:39:12.751773+00:00",
+  "XAUUSD|SELL|3470.00": "2026-11-25T16:03:03.886431+00:00",
+  "XAUUSD|SELL|3501.45": "2026-11-25T16:03:05.700985+00:00",
+  "XAGUSD|SELL|39.48": "2026-11-25T16:03:11.131722+00:00",
+  "WTIUSD|BUY|83.22": "2026-11-25T16:03:20.802785+00:00",
+  "NAS100|SELL|25400.00": "2026-11-25T16:03:27.720568+00:00"
  },
  "daily": {
-  "2026-11-25": 4
+  "2026-11-25": 9
  },
  "journal": [
   {
@@ -38,10 +43,10 @@
    "tp3": 40.0,
    "level_kind": "ROUND",
    "grade": "A+",
-   "cur_sl": 40.94,
-   "realized_r": 0.3,
-   "outcome": "OPEN",
-   "closed_ts": null
+   "cur_sl": 40.6,
+   "realized_r": 1.0,
+   "outcome": "TP3",
+   "closed_ts": "2026-11-25T16:03:31.795849+00:00"
   },
   {
    "ts": "2026-11-25T05:39:26.437050+00:00",
@@ -55,7 +60,75 @@
    "tp3": 0.8946,
    "level_kind": "EQL",
    "grade": "A",
-   "cur_sl": 0.9202,
+   "cur_sl": 0.9126,
+   "realized_r": 0.7,
+   "outcome": "OPEN",
+   "closed_ts": null
+  },
+  {
+   "ts": "2026-11-25T16:03:11.025175+00:00",
+   "asset": "XAUUSD",
+   "display": "ทองคำ (XAUUSD)",
+   "side": "SELL",
+   "entry": 3498.0,
+   "sl": 3516.8,
+   "tp1": 3480,
+   "tp2": 3460,
+   "tp3": 3435.6,
+   "level_kind": "FVG_BEAR",
+   "grade": "A",
+   "cur_sl": 3480,
+   "realized_r": 0.7,
+   "outcome": "OPEN",
+   "closed_ts": null
+  },
+  {
+   "ts": "2026-11-25T16:03:17.366516+00:00",
+   "asset": "XAGUSD",
+   "display": "เงิน (XAGUSD)",
+   "side": "SELL",
+   "entry": 39.3,
+   "sl": 39.77,
+   "tp1": 38.5,
+   "tp2": 38.26,
+   "tp3": 37.81,
+   "level_kind": "FVG_BEAR",
+   "grade": "A+",
+   "cur_sl": 39.77,
+   "realized_r": 0.0,
+   "outcome": "OPEN",
+   "closed_ts": null
+  },
+  {
+   "ts": "2026-11-25T16:03:27.668883+00:00",
+   "asset": "WTIUSD",
+   "display": "น้ำมันดิบ (WTI)",
+   "side": "BUY",
+   "entry": 83.51,
+   "sl": 82.99,
+   "tp1": 84,
+   "tp2": 84.66,
+   "tp3": 85.08,
+   "level_kind": "EQH",
+   "grade": "A",
+   "cur_sl": 82.99,
+   "realized_r": -1.0,
+   "outcome": "SL",
+   "closed_ts": "2026-11-25T16:03:31.795866+00:00"
+  },
+  {
+   "ts": "2026-11-25T16:03:31.795787+00:00",
+   "asset": "NAS100",
+   "display": "NAS100 (NQ=F)",
+   "side": "SELL",
+   "entry": 25334.5,
+   "sl": 25549.6,
+   "tp1": 25100,
+   "tp2": 24841.9,
+   "tp3": 24562.2,
+   "level_kind": "ROUND",
+   "grade": "A",
+   "cur_sl": 25549.6,
    "realized_r": 0.0,
    "outcome": "OPEN",
    "closed_ts": null
@@ -63,39 +136,39 @@
  ],
  "levels_cache": {
   "BTCUSDT": [
-   "ROUND 59,000",
-   "SESSION_LOW 58,938",
-   "PDL 59,260"
+   "SESSION_LOW 58,456",
+   "ROUND 58,000",
+   "EQL 58,787"
   ],
   "XAUUSD": [
-   "EQL 3,542.2",
-   "ROUND 3,540.0",
-   "PDL 3,545.4"
+   "ROUND 3,470.0",
+   "ROUND 3,480.0",
+   "ROUND 3,460.0"
   ],
   "XAGUSD": [
-   "SESSION_LOW 40.38",
-   "EQL 40.49",
-   "EQL 40.59"
+   "ROUND 39.00",
+   "ROUND 38.50",
+   "SESSION_LOW 38.42"
   ],
   "SOLUSDT": [
-   "EQL 68.51",
-   "SESSION_LOW 68.41",
-   "PDL 68.57"
+   "EQH 67.89",
+   "EQH 68.07",
+   "SESSION_LOW 67.29"
   ],
   "XRPUSDT": [
-   "EQL 0.9158",
-   "EQL 0.9182",
-   "EQH 0.9126"
+   "SESSION_LOW 0.9048",
+   "ROUND 0.9000",
+   "PDL 0.9093"
   ],
   "WTIUSD": [
-   "EQH 80.60",
-   "EQL 80.65",
-   "EQH 80.46"
+   "EQH 83.22",
+   "EQH 83.11",
+   "EQH 83.39"
   ],
   "NAS100": [
-   "SESSION_LOW 25,893.8",
-   "EQH 25,941.2",
-   "EQL 25,824.6"
+   "ROUND 25,200.0",
+   "ROUND 25,100.0",
+   "ROUND 25,300.0"
   ]
  },
  "regime_cache": {
@@ -130,24 +203,9 @@
  },
  "paper": {
   "start": 10000.0,
-  "equity": 10030.0,
+  "equity": 10029.7,
   "risk_pct": 1.0,
   "positions": {
-   "XAGUSD": {
-    "ts": "2026-11-25T02:23:10.513266+00:00",
-    "side": "SELL",
-    "entry": 40.94,
-    "sl": 41.14,
-    "tp1": 40.6,
-    "tp2": 40.5,
-    "tp3": 40.0,
-    "cur_sl": 40.94,
-    "realized_r": 0.3,
-    "outcome": "OPEN",
-    "risk_usd": 100.0,
-    "grade": "A+",
-    "display": "เงิน (XAGUSD)"
-   },
    "XRPUSDT": {
     "ts": "2026-11-25T05:39:26.437082+00:00",
     "side": "SELL",
@@ -156,12 +214,42 @@
     "tp1": 0.9126,
     "tp2": 0.9,
     "tp3": 0.8946,
-    "cur_sl": 0.9202,
-    "realized_r": 0.0,
+    "cur_sl": 0.9126,
+    "realized_r": 0.7,
     "outcome": "OPEN",
     "risk_usd": 100.0,
     "grade": "A",
     "display": "XRP/USDT"
+   },
+   "XAUUSD": {
+    "ts": "2026-11-25T16:03:11.025207+00:00",
+    "side": "SELL",
+    "entry": 3498.0,
+    "sl": 3516.8,
+    "tp1": 3480,
+    "tp2": 3460,
+    "tp3": 3435.6,
+    "cur_sl": 3480,
+    "realized_r": 0.7,
+    "outcome": "OPEN",
+    "risk_usd": 100.3,
+    "grade": "A",
+    "display": "ทองคำ (XAUUSD)"
+   },
+   "NAS100": {
+    "ts": "2026-11-25T16:03:31.795827+00:00",
+    "side": "SELL",
+    "entry": 25334.5,
+    "sl": 25549.6,
+    "tp1": 25100,
+    "tp2": 24841.9,
+    "tp3": 24562.2,
+    "cur_sl": 25549.6,
+    "realized_r": 0.0,
+    "outcome": "OPEN",
+    "risk_usd": 100.3,
+    "grade": "A",
+    "display": "NAS100 (NQ=F)"
    }
   },
   "equity_curve": [
@@ -172,6 +260,14 @@
    [
     "2026-11-25T05:39:26.568352+00:00",
     10030.0
+   ],
+   [
+    "2026-11-25T16:03:31.795900+00:00",
+    10130.0
+   ],
+   [
+    "2026-11-25T16:03:31.795922+00:00",
+    10029.7
    ]
   ],
   "closed": [
@@ -185,6 +281,28 @@
     "r": 0.3,
     "pnl_usd": 30.0,
     "equity": 10030.0
+   },
+   {
+    "closed_ts": "2026-11-25T16:03:31.795893+00:00",
+    "asset": "XAGUSD",
+    "display": "เงิน (XAGUSD)",
+    "side": "SELL",
+    "grade": "A+",
+    "outcome": "TP3",
+    "r": 1.0,
+    "pnl_usd": 100.0,
+    "equity": 10130.0
+   },
+   {
+    "closed_ts": "2026-11-25T16:03:31.795917+00:00",
+    "asset": "WTIUSD",
+    "display": "น้ำมันดิบ (WTI)",
+    "side": "BUY",
+    "grade": "A",
+    "outcome": "SL",
+    "r": -1.0,
+    "pnl_usd": -100.3,
+    "equity": 10029.7
    }
   ]
  },
