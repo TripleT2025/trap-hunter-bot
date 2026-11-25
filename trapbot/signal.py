@@ -49,7 +49,10 @@ class Signal:
 
 
 def _tick_round(value: float, asset: str) -> float:
-    return round(value, 0) if asset.startswith("BTC") else round(value, 1)
+    """ปัดทศนิยมตามชนิดสินทรัพย์เพื่อให้ตัวเลขบนการ์ดอ่านง่าย (ไม่ใช่การดูดราคาให้เป็นเลขสวย)"""
+    from .data import price_decimals
+
+    return round(value, price_decimals(asset))
 
 
 def build_signal(hit: dict, levels: list[Level], asset: str, display_name: str, eng: dict) -> Signal | None:
