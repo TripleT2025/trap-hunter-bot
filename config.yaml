@@ -1,5 +1,6 @@
 # ตั้งค่าระบบ Trap Hunter Bot
 # ปรับค่าได้อิสระ - ทุกค่ามีคำอธิบายกำกับ
+# เปิด/ปิดสินทรัพย์ไหนก็ได้ด้วย enabled: true/false
 
 assets:
   BTCUSDT:
@@ -20,6 +21,53 @@ assets:
     htf: 1h
     delta_enabled: false          # ทองไม่มีข้อมูลแรงซื้อ-ขายจริงฟรีๆ -> ใช้กฎ fast reclaim แทน
     round_step: 10                # ตัวเลขสวยทอง (เช่น 3550, 3560)
+
+  XAGUSD:
+    enabled: true
+    source: yfinance              # ฟิวเจอร์สเงิน COMEX (SI=F) - ผันผวนกว่าทอง 1.5-2 เท่า
+    yf_symbol: SI=F
+    trigger_tf: 15m
+    htf: 1h
+    delta_enabled: false
+    round_step: 0.5               # เลขสวยเงิน (30.00, 30.50, 31.00)
+
+  SOLUSDT:
+    enabled: true
+    source: binance               # ราชาความผันผวนหมู่เหรียญใหญ่ มี delta จริงจาก Binance
+    binance_host: https://data-api.binance.vision
+    symbol: SOLUSDT
+    trigger_tf: 15m
+    htf: 1h
+    delta_enabled: true
+    round_step: 5                 # เลขสวย SOL (150, 155, 160)
+
+  XRPUSDT:
+    enabled: true
+    source: binance
+    binance_host: https://data-api.binance.vision
+    symbol: XRPUSDT
+    trigger_tf: 15m
+    htf: 1h
+    delta_enabled: true
+    round_step: 0.05              # เลขสวย XRP (2.00, 2.05, 2.10)
+
+  WTIUSD:
+    enabled: true
+    source: yfinance              # ฟิวเจอร์สน้ำมันดิบ WTI (CL=F) - ผันผวนตามข่าว OPEC/ภูมิรัฐศาสตร์
+    yf_symbol: CL=F
+    trigger_tf: 15m
+    htf: 1h
+    delta_enabled: false
+    round_step: 1                 # เลขสวยน้ำมัน (65, 70, 75)
+
+  NAS100:
+    enabled: true
+    source: yfinance              # ฟิวเจอร์ส Nasdaq 100 (NQ=F) - ดัชนีเทคผันผวนสูง กลับดัก PDH/PDL คลาสสิก
+    yf_symbol: NQ=F
+    trigger_tf: 15m
+    htf: 1h
+    delta_enabled: false
+    round_step: 100               # เลขสวย NAS (21000, 21100)
 
 engine:
   lookback_bars: 300              # จำนวนเทียนย้อนหลังที่ใช้สร้างแผนที่กับดัก
@@ -51,3 +99,26 @@ ai:
 
 telegram:
   parse_mode: HTML
+
+features:                            # ระบบเสริมทั้งหมด - ปิดทีละตัวได้ด้วย enabled: false
+  morning_brief:                     # สรุปเช้าทุกวัน 08:00 เวลาไทย + รายงานสัปดาห์วันจันทร์
+    enabled: true
+    hour: 8                          # ชั่วโมงตามเวลาไทย (ไม่มี DST จึงคงที่)
+    window_minutes: 15               # รอบรันในช่วง 08:00-08:15 จะส่ง 1 ครั้ง/วัน (กันส่งซ้ำด้วย state)
+    ai_brief: true                   # ให้ AI เขียนมุมมองตลาด 2-3 ประโยคในสรุปเช้า
+    weekly: true                     # วันจันทร์แถมรายงานสัปดาห์ + กราฟพอร์ตจำลอง + ข้อเสนอจาก AI
+  commands:                          # คำสั่ง /status /levels /history /stats /pause /resume
+    enabled: true
+  charts:                            # วาดกราฟจังหวะแนบทุกการ์ด
+    enabled: true
+  journal:                           # สมุดจดผลจริง ติดตาม TP/SL ทุกไม้ที่ส่ง
+    enabled: true
+  paper:                             # พอร์ตจำลอง เริ่ม 10,000$ เสี่ยง 1% ต่อไม้
+    enabled: true
+    start_equity: 10000.0
+    risk_pct: 1.0
+  confluence:                        # ยืนยันข้ามตลาด (Funding/OI คอยน์, DXY ทอง-เงิน-NAS)
+    enabled: true
+  calendar:                          # เช็คข่าวแรง USD รอบไม้ (FOMC/CPI/NFP ฯลฯ)
+    enabled: true
+    hours_ahead: 3                   # กรอบเตือน: ข่าวที่จะตกในอีกไม่เกิน 3 ชม.
