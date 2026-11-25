@@ -1,4 +1,90 @@
 {
- "last_signal": {},
- "daily": {}
+ "last_signal": {
+  "BTCUSDT|SELL|59710.95": "2026-11-25T01:10:57.998623+00:00"
+ },
+ "daily": {
+  "2026-11-25": 1
+ },
+ "journal": [],
+ "levels_cache": {
+  "BTCUSDT": [
+   "SESSION_LOW 59,444",
+   "FVG_BEAR 59,711",
+   "SESSION_LOW 59,391"
+  ],
+  "XAUUSD": [
+   "ROUND 3,540.0",
+   "ROUND 3,550.0",
+   "SESSION_LOW 3,537.9"
+  ],
+  "XAGUSD": [
+   "EQL 40.59",
+   "SESSION_LOW 40.53",
+   "ROUND 40.50"
+  ],
+  "SOLUSDT": [
+   "EQH 69.44",
+   "SESSION_LOW 69.38",
+   "EQH 69.84"
+  ],
+  "XRPUSDT": [
+   "EQL 0.9210",
+   "EQL 0.9194",
+   "SESSION_LOW 0.9191"
+  ],
+  "WTIUSD": [
+   "FVG_BEAR 81.80",
+   "EQL 81.77",
+   "EQL 81.85"
+  ],
+  "NAS100": [
+   "EQL 26,139.0",
+   "ROUND 26,200.0",
+   "FVG_BEAR 26,224.2"
+  ]
+ },
+ "regime_cache": {
+  "BTCUSDT": {
+   "regime": "NORMAL",
+   "display": "BTC/USDT"
+  },
+  "XAUUSD": {
+   "regime": "NORMAL",
+   "display": "ทองคำ (XAUUSD)"
+  },
+  "XAGUSD": {
+   "regime": "NORMAL",
+   "display": "เงิน (XAGUSD)"
+  },
+  "SOLUSDT": {
+   "regime": "NORMAL",
+   "display": "Solana (SOL/USDT)"
+  },
+  "XRPUSDT": {
+   "regime": "NORMAL",
+   "display": "XRP/USDT"
+  },
+  "WTIUSD": {
+   "regime": "NORMAL",
+   "display": "น้ำมันดิบ (WTI)"
+  },
+  "NAS100": {
+   "regime": "NORMAL",
+   "display": "NAS100 (NQ=F)"
+  }
+ },
+ "paper": {
+  "start": 10000.0,
+  "equity": 10000.0,
+  "risk_pct": 1.0,
+  "positions": {},
+  "equity_curve": [
+   [
+    "2026-11-25T01:11:12.719886+00:00",
+    10000.0
+   ]
+  ],
+  "closed": []
+ },
+ "brief_date": "2026-11-25"
 }
