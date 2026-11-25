@@ -1,46 +1,83 @@
 {
  "last_signal": {
-  "BTCUSDT|SELL|59710.95": "2026-11-25T01:10:57.998623+00:00"
+  "BTCUSDT|SELL|59710.95": "2026-11-25T01:10:57.998623+00:00",
+  "BTCUSDT|SELL|59241.88": "2026-11-25T02:22:54.026492+00:00",
+  "XAGUSD|SELL|41.00": "2026-11-25T02:23:06.983390+00:00"
  },
  "daily": {
-  "2026-11-25": 1
+  "2026-11-25": 3
  },
- "journal": [],
+ "journal": [
+  {
+   "ts": "2026-11-25T02:23:06.866652+00:00",
+   "asset": "BTCUSDT",
+   "display": "BTC/USDT",
+   "side": "SELL",
+   "entry": 59214.0,
+   "sl": 59336.0,
+   "tp1": 59000,
+   "tp2": 58939.0,
+   "tp3": 58794.0,
+   "level_kind": "EQH",
+   "grade": "A+",
+   "cur_sl": 59214.0,
+   "realized_r": 0.3,
+   "outcome": "OPEN",
+   "closed_ts": null
+  },
+  {
+   "ts": "2026-11-25T02:23:10.513235+00:00",
+   "asset": "XAGUSD",
+   "display": "เงิน (XAGUSD)",
+   "side": "SELL",
+   "entry": 40.94,
+   "sl": 41.14,
+   "tp1": 40.6,
+   "tp2": 40.5,
+   "tp3": 40.0,
+   "level_kind": "ROUND",
+   "grade": "A+",
+   "cur_sl": 41.14,
+   "realized_r": 0.0,
+   "outcome": "OPEN",
+   "closed_ts": null
+  }
+ ],
  "levels_cache": {
   "BTCUSDT": [
-   "SESSION_LOW 59,444",
-   "FVG_BEAR 59,711",
-   "SESSION_LOW 59,391"
+   "ROUND 59,000",
+   "SESSION_LOW 58,952",
+   "EQH 59,242"
   ],
   "XAUUSD": [
-   "ROUND 3,540.0",
-   "ROUND 3,550.0",
-   "SESSION_LOW 3,537.9"
+   "ROUND 3,560.0",
+   "SESSION_LOW 3,551.9",
+   "ROUND 3,550.0"
   ],
   "XAGUSD": [
-   "EQL 40.59",
-   "SESSION_LOW 40.53",
-   "ROUND 40.50"
+   "FVG_BEAR 41.15",
+   "ROUND 41.00",
+   "FVG_BEAR 41.40"
   ],
   "SOLUSDT": [
-   "EQH 69.44",
-   "SESSION_LOW 69.38",
-   "EQH 69.84"
+   "PDL 68.57",
+   "SESSION_LOW 68.50",
+   "EQL 68.74"
   ],
   "XRPUSDT": [
-   "EQL 0.9210",
-   "EQL 0.9194",
-   "SESSION_LOW 0.9191"
+   "EQH 0.9126",
+   "SESSION_LOW 0.9111",
+   "PDL 0.9093"
   ],
   "WTIUSD": [
-   "FVG_BEAR 81.80",
-   "EQL 81.77",
-   "EQL 81.85"
+   "ROUND 81.00",
+   "EQL 81.24",
+   "EQL 81.28"
   ],
   "NAS100": [
-   "EQL 26,139.0",
-   "ROUND 26,200.0",
-   "FVG_BEAR 26,224.2"
+   "EQH 26,042.0",
+   "SESSION_LOW 26,017.2",
+   "SESSION_LOW 25,998.0"
   ]
  },
  "regime_cache": {
@@ -77,7 +114,38 @@
   "start": 10000.0,
   "equity": 10000.0,
   "risk_pct": 1.0,
-  "positions": {},
+  "positions": {
+   "BTCUSDT": {
+    "ts": "2026-11-25T02:23:06.866683+00:00",
+    "side": "SELL",
+    "entry": 59214.0,
+    "sl": 59336.0,
+    "tp1": 59000,
+    "tp2": 58939.0,
+    "tp3": 58794.0,
+    "cur_sl": 59214.0,
+    "realized_r": 0.3,
+    "outcome": "OPEN",
+    "risk_usd": 100.0,
+    "grade": "A+",
+    "display": "BTC/USDT"
+   },
+   "XAGUSD": {
+    "ts": "2026-11-25T02:23:10.513266+00:00",
+    "side": "SELL",
+    "entry": 40.94,
+    "sl": 41.14,
+    "tp1": 40.6,
+    "tp2": 40.5,
+    "tp3": 40.0,
+    "cur_sl": 41.14,
+    "realized_r": 0.0,
+    "outcome": "OPEN",
+    "risk_usd": 100.0,
+    "grade": "A+",
+    "display": "เงิน (XAGUSD)"
+   }
+  },
   "equity_curve": [
    [
     "2026-11-25T01:11:12.719886+00:00",
@@ -86,5 +154,6 @@
   ],
   "closed": []
  },
- "brief_date": "2026-11-25"
+ "brief_date": "2026-11-25",
+ "tg_offset": 367409304
 }
