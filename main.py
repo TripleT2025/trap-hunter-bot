@@ -9,6 +9,7 @@
      -> วาดกราฟจังหวะ -> ยิงการ์ด + กราฟเข้า Telegram
   4. สมุดจดผล + พอร์ตจำลองเดินตามราคาทุกรอบ แจ้งผลทันทีเมื่อไม้ปิด (TP/SL)
   5. สรุปเช้า 08:00 ไทยทุกวัน + รายงานสัปดาห์พร้อมกราฟพอร์ตทุกวันจันทร์ + เตือนเมื่อสภาพตลาดเปลี่ยน
+  6. พยากรณ์ทิศทางเช้า BTC + ทองคำ 08:00 ไทย (จุดรับ-จุดต้าน + แผนเล่น + กราฟสวย)
 
 หลักการออกแบบ: ทุกระบบเสริมคลุม try/except ของตัวเอง - อะไรล้มก็ล้มอย่างเดียว
 ชั้นสแกนหลัก "ไม่เคย" สะดุดเพราะระบบเสริม และถ้าโดนหยุดชั่วคราว (/pause) ระบบยังสแกน จดผล ตอบคำสั่งครบ
@@ -40,6 +41,7 @@ from trapbot.data import (
 from trapbot.detector import detect
 from trapbot.grades import grade_signal
 from trapbot.liquidity import build_levels
+from trapbot.morning_outlook import maybe_send_outlook
 from trapbot.regime import apply_regime, classify, label as regime_label
 from trapbot.signal import build_signal
 from trapbot.state import check_and_update, load, save
@@ -306,6 +308,18 @@ def main() -> int:
                 print("[brief] ส่งสรุปเช้าแล้ว")
         except Exception as e:
             print(f"[brief] ล้ม ({e.__class__.__name__}) - ไม่กระทบรอบหลัก", file=sys.stderr)
+
+    # ---- 6) พยากรณ์ทิศทางวันนี้ BTC + ทอง (08:00 ไทย: จุดรับ-จุดต้าน + แผนเล่น + กราฟสวย) ----
+    if tg_ready and not dry_run and not paused:
+        try:
+            ocfg = dict(feats.get("morning_outlook") or {})
+            ocfg["ai_cfg"] = cfg["ai"]
+            ocfg["dxy_trend"] = dxy_tr
+            ocfg["_assets_cfg"] = cfg["assets"]
+            if maybe_send_outlook(ocfg, state, tg_cfg, ctx, send_fn=send, send_photo_fn=send_photo):
+                print("[outlook] ส่งพยากรณ์ทิศทางเช้าแล้ว")
+        except Exception as e:
+            print(f"[outlook] ล้ม ({e.__class__.__name__}) - ไม่กระทบรอบหลัก", file=sys.stderr)
 
     save(state)
     if not sent_any:
