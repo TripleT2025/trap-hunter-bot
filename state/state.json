@@ -2,10 +2,11 @@
  "last_signal": {
   "BTCUSDT|SELL|59710.95": "2026-11-25T01:10:57.998623+00:00",
   "BTCUSDT|SELL|59241.88": "2026-11-25T02:22:54.026492+00:00",
-  "XAGUSD|SELL|41.00": "2026-11-25T02:23:06.983390+00:00"
+  "XAGUSD|SELL|41.00": "2026-11-25T02:23:06.983390+00:00",
+  "XRPUSDT|SELL|0.92": "2026-11-25T05:39:12.751773+00:00"
  },
  "daily": {
-  "2026-11-25": 3
+  "2026-11-25": 4
  },
  "journal": [
   {
@@ -22,8 +23,8 @@
    "grade": "A+",
    "cur_sl": 59214.0,
    "realized_r": 0.3,
-   "outcome": "OPEN",
-   "closed_ts": null
+   "outcome": "PARTIAL +0.3R",
+   "closed_ts": "2026-11-25T05:39:26.568304+00:00"
   },
   {
    "ts": "2026-11-25T02:23:10.513235+00:00",
@@ -37,7 +38,24 @@
    "tp3": 40.0,
    "level_kind": "ROUND",
    "grade": "A+",
-   "cur_sl": 41.14,
+   "cur_sl": 40.94,
+   "realized_r": 0.3,
+   "outcome": "OPEN",
+   "closed_ts": null
+  },
+  {
+   "ts": "2026-11-25T05:39:26.437050+00:00",
+   "asset": "XRPUSDT",
+   "display": "XRP/USDT",
+   "side": "SELL",
+   "entry": 0.9161,
+   "sl": 0.9202,
+   "tp1": 0.9126,
+   "tp2": 0.9,
+   "tp3": 0.8946,
+   "level_kind": "EQL",
+   "grade": "A",
+   "cur_sl": 0.9202,
    "realized_r": 0.0,
    "outcome": "OPEN",
    "closed_ts": null
@@ -46,38 +64,38 @@
  "levels_cache": {
   "BTCUSDT": [
    "ROUND 59,000",
-   "SESSION_LOW 58,952",
-   "EQH 59,242"
+   "SESSION_LOW 58,938",
+   "PDL 59,260"
   ],
   "XAUUSD": [
-   "ROUND 3,560.0",
-   "SESSION_LOW 3,551.9",
-   "ROUND 3,550.0"
+   "EQL 3,542.2",
+   "ROUND 3,540.0",
+   "PDL 3,545.4"
   ],
   "XAGUSD": [
-   "FVG_BEAR 41.15",
-   "ROUND 41.00",
-   "FVG_BEAR 41.40"
+   "SESSION_LOW 40.38",
+   "EQL 40.49",
+   "EQL 40.59"
   ],
   "SOLUSDT": [
-   "PDL 68.57",
-   "SESSION_LOW 68.50",
-   "EQL 68.74"
+   "EQL 68.51",
+   "SESSION_LOW 68.41",
+   "PDL 68.57"
   ],
   "XRPUSDT": [
-   "EQH 0.9126",
-   "SESSION_LOW 0.9111",
-   "PDL 0.9093"
+   "EQL 0.9158",
+   "EQL 0.9182",
+   "EQH 0.9126"
   ],
   "WTIUSD": [
-   "ROUND 81.00",
-   "EQL 81.24",
-   "EQL 81.28"
+   "EQH 80.60",
+   "EQL 80.65",
+   "EQH 80.46"
   ],
   "NAS100": [
-   "EQH 26,042.0",
-   "SESSION_LOW 26,017.2",
-   "SESSION_LOW 25,998.0"
+   "SESSION_LOW 25,893.8",
+   "EQH 25,941.2",
+   "EQL 25,824.6"
   ]
  },
  "regime_cache": {
@@ -112,24 +130,9 @@
  },
  "paper": {
   "start": 10000.0,
-  "equity": 10000.0,
+  "equity": 10030.0,
   "risk_pct": 1.0,
   "positions": {
-   "BTCUSDT": {
-    "ts": "2026-11-25T02:23:06.866683+00:00",
-    "side": "SELL",
-    "entry": 59214.0,
-    "sl": 59336.0,
-    "tp1": 59000,
-    "tp2": 58939.0,
-    "tp3": 58794.0,
-    "cur_sl": 59214.0,
-    "realized_r": 0.3,
-    "outcome": "OPEN",
-    "risk_usd": 100.0,
-    "grade": "A+",
-    "display": "BTC/USDT"
-   },
    "XAGUSD": {
     "ts": "2026-11-25T02:23:10.513266+00:00",
     "side": "SELL",
@@ -138,21 +141,52 @@
     "tp1": 40.6,
     "tp2": 40.5,
     "tp3": 40.0,
-    "cur_sl": 41.14,
-    "realized_r": 0.0,
+    "cur_sl": 40.94,
+    "realized_r": 0.3,
     "outcome": "OPEN",
     "risk_usd": 100.0,
     "grade": "A+",
     "display": "เงิน (XAGUSD)"
+   },
+   "XRPUSDT": {
+    "ts": "2026-11-25T05:39:26.437082+00:00",
+    "side": "SELL",
+    "entry": 0.9161,
+    "sl": 0.9202,
+    "tp1": 0.9126,
+    "tp2": 0.9,
+    "tp3": 0.8946,
+    "cur_sl": 0.9202,
+    "realized_r": 0.0,
+    "outcome": "OPEN",
+    "risk_usd": 100.0,
+    "grade": "A",
+    "display": "XRP/USDT"
    }
   },
   "equity_curve": [
    [
     "2026-11-25T01:11:12.719886+00:00",
     10000.0
+   ],
+   [
+    "2026-11-25T05:39:26.568352+00:00",
+    10030.0
    ]
   ],
-  "closed": []
+  "closed": [
+   {
+    "closed_ts": "2026-11-25T05:39:26.568345+00:00",
+    "asset": "BTCUSDT",
+    "display": "BTC/USDT",
+    "side": "SELL",
+    "grade": "A+",
+    "outcome": "PARTIAL +0.3R",
+    "r": 0.3,
+    "pnl_usd": 30.0,
+    "equity": 10030.0
+   }
+  ]
  },
  "brief_date": "2026-11-25",
  "tg_offset": 367409304
