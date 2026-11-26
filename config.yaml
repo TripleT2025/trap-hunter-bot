@@ -1,4 +1,4 @@
-# ตั้งค่าระบบ Trap Hunter Bot
+# ตั้งค่าระบบ Trap Hunter Bot (รุ่นปรับปรุงตามมติ 3 AI - 26 พ.ย. 2026)
 # ปรับค่าได้อิสระ - ทุกค่ามีคำอธิบายกำกับ
 # เปิด/ปิดสินทรัพย์ไหนก็ได้ด้วย enabled: true/false
 
@@ -12,6 +12,7 @@ assets:
     htf: 1h                       # กราฟใหญ่ที่ใช้กำหนดทิศทางรวม
     delta_enabled: true           # Binance มีข้อมูลแรงซื้อ-ขายจริง (taker buy volume)
     round_step: 1000              # ตัวเลขสวยที่ฝูงชนจ้อง (เช่น 60000, 61000)
+    venue_line: Binance Spot (BTCUSDT) - ฟีดตรง 24/7
 
   XAUUSD:
     enabled: true
@@ -21,6 +22,11 @@ assets:
     htf: 1h
     delta_enabled: false          # ทองไม่มีข้อมูลแรงซื้อ-ขายจริงฟรีๆ -> ใช้กฎ fast reclaim แทน
     round_step: 10                # ตัวเลขสวยทอง (เช่น 3550, 3560)
+    venue_line: COMEX Futures (GC=F) ผ่านฟีด Yahoo - หน่วงได้ ราคาไม่ตรงโบรก spot เสมอ ให้เทียบกราฟโบรกก่อนกด
+    # โหมดเฝ้าดูทอง (มติ Claude+ChatGPT): ฟีด GC=F หน่วงและใช้กับโบรกคนละตัว
+    # การ์ดเต็มพร้อมเสียงจะยิงได้เฉพาะช่วงตลาดสหรัฐเปิด นอกช่วงนั้นลดเป็นการ์ดเฝ้าดู (เงียบ)
+    watch_outside_us: true
+    us_session_th: [20, 4]        # ช่วงตลาดสหรัฐตามเวลาไทย: 20:00-04:00 น. (ข้ามเที่ยงคืน)
 
   XAGUSD:
     enabled: true
@@ -30,6 +36,7 @@ assets:
     htf: 1h
     delta_enabled: false
     round_step: 0.5               # เลขสวยเงิน (30.00, 30.50, 31.00)
+    venue_line: COMEX Futures (SI=F) ผ่านฟีด Yahoo - เทียบราคาโบรกก่อนกดเสมอ
 
   SOLUSDT:
     enabled: true
@@ -40,6 +47,7 @@ assets:
     htf: 1h
     delta_enabled: true
     round_step: 5                 # เลขสวย SOL (150, 155, 160)
+    venue_line: Binance Spot (SOLUSDT) - ฟีดตรง 24/7
 
   XRPUSDT:
     enabled: true
@@ -50,6 +58,7 @@ assets:
     htf: 1h
     delta_enabled: true
     round_step: 0.05              # เลขสวย XRP (2.00, 2.05, 2.10)
+    venue_line: Binance Spot (XRPUSDT) - ฟีดตรง 24/7
 
   WTIUSD:
     enabled: true
@@ -59,6 +68,7 @@ assets:
     htf: 1h
     delta_enabled: false
     round_step: 1                 # เลขสวยน้ำมัน (65, 70, 75)
+    venue_line: NYMEX WTI (CL=F) ผ่านฟีด Yahoo - เทียบราคาโบรกก่อนกดเสมอ
 
   NAS100:
     enabled: true
@@ -68,6 +78,7 @@ assets:
     htf: 1h
     delta_enabled: false
     round_step: 100               # เลขสวย NAS (21000, 21100)
+    venue_line: CME E-mini NQ (NQ=F) ผ่านฟีด Yahoo - เทียบราคาโบรกก่อนกดเสมอ
 
 engine:
   lookback_bars: 300              # จำนวนเทียนย้อนหลังที่ใช้สร้างแผนที่กับดัก
@@ -80,45 +91,54 @@ engine:
   allow_counter_trend: false      # ห้าม sweep สวนกราฟใหญ่ (แม้จะเป็นกับดักใหญ่)
   eq_tolerance_atr: 0.12          # จุดสูง/ต่ำห่างกันไม่เกิน 0.12 ATR ถือว่า "เท่ากัน"
   min_touches_major: 2            # จุดสัมผัสขั้นต่ำที่จะถือเป็นกับดัก (กอง SL ต้องมี 2 กองขึ้น)
-  cooldown_hours: 2               # กันส่งการ์ด "จังหวะเดิม" ซ้ำ (จังหวะหนึ่งยังสดในหน้าต่างตรวจจับ ~1.5 ชม.)
-                                  # นี่คือกันซ้ำ ไม่ใช่การจำกัดจำนวน - จังหวะใหม่ที่ไหนก็ยิงได้ทันที
+
+  # กันซ้ำรุ่นใหม่: รหัสเหตุการณ์ถาวร = ตลาด+ฝั่ง+ระดับ+เวลาแท่งกวาด (มติ 3 AI - 26 พ.ย.)
+  # เหตุการณ์เดิม (แท่งกวาดเดียวกัน) ส่งได้ครั้งเดียว แต่จังหวะใหม่ (แท่งกวาดใหม่) ยิงได้ทันที
+  event_dedup: true
+  cooldown_hours: 0               # 0 = ปิด cooldown เก่า (มีรหัสเหตุการณ์แทนแล้ว - จะเปิดกลับก็ได้)
   symbol_cooldown_hours: 0        # 0 = ปิด - แต่ละระดับกับดักนับเป็นไม้แยกกันหมด (โหมดไม่จำกัด)
   max_signals_per_day: 999        # ไม่จำกัดจำนวนต่อวัน - คุณภาพยังถูกคุมด้วยชั้นยืนยันครบทุกชั้นเสมอ
 
-  regime:                         # ความฉลาดปรับตัว: วัดสภาพตลาดแล้วปรับเกณฑ์กรองให้พอดีอัตโนมัติ (regime.py)
+  # ประตู "ยังเข้าได้ไหม" ก่อนยิงการ์ด (มติ 3 AI): ไม่ทัน = จดว่า "พบแต่ส่งไม่ทัน" ไม่ยิงให้ไล่ราคา
+  tradability:
     enabled: true
-    quiet_ratio: 0.70             # ATR 1 ชม. ต่ำกว่า 0.70 เท่าของค่ากลาง = ตลาดเงียบ (คลายเกณฑ์เล็กน้อย)
-    volatile_ratio: 1.50          # สูงกว่า 1.50 เท่า = ผันผวนแรง (ยกเกณฑ์ทุกชั้นให้เข้มขึ้น)
+    max_age_minutes: 30           # แท่งยืนยันปิดมากว่านี้ = หมดเวลา ไม่ส่ง (การ์ดมีอายุชัดเจน)
+    beyond_entry_atr: 0.15        # ราคาหลุดเลยโซนเข้าเกินกี่ ATR = กลับตัวที่รอไม่เกิด ไม่ส่ง
+    chase_r: 0.5                  # ราคาวิ่งพ้นโซนเข้าเกินกี่ R = ไล่ไม้ ไม่ใช่แผน ไม่ส่ง
+
+  regime:                         # โหมดปรับเกณฑ์อัตโนมัติ - ปิดตามมติ 3 AI (26 พ.ย.)
+    enabled: false                # เหตุผล: ตัวอย่างยังน้อย ใช้เกณฑ์คงที่ที่วัดผลได้ก่อน
+                                  # (เปิดกลับได้เมื่อมี ~100 สัญญาณ/ตลาด แล้วเทียบผลได้)
 
 ai:
-  enabled: true                      # ชั้น AI ตรวจซ้ำ - ตื่นเฉพาะตอนมีสัญญาณเท่านั้น จึงกินเครดิตน้อยมาก
-  base_url: https://openrouter.ai/api/v1   # เรียกผ่าน OpenRouter (คีย์อยู่ที่ GitHub Secret: OPENROUTER_API_KEY)
-  model: openai/gpt-4o-mini          # เร็ว ถูก ภาษาไทยลื่น - ค่าเฉลี่ยเดือนละไม่กี่เซนต์
-                                     # อยากใช้ฟรี 0 บาท เปลี่ยนเป็น: google/gemini-2.0-flash-exp:free
-                                     # หรือ: deepseek/deepseek-chat-v3-0324:free (ดูราคาที่ openrouter.ai/models)
+  enabled: false                  # ถอด AI ออกจากจุดตัดสินสัญญาณ (มติ 3 AI): เกณฑ์คงที่
+                                  # ตรวจย้อนหลังได้ ผลลัพธ์ไม่สุ่ม และไม่เสียค่า OpenRouter
+                                  # เหตุผลสัญญาณกลับไปใช้เทมเพลตที่เขียนจากข้อมูลจริงของไม้นั้น
+  base_url: https://openrouter.ai/api/v1   # (ยังใช้เขียนข้อเสนอรายสัปดาห์ถ้าใส่ key)
 
 telegram:
   parse_mode: HTML
 
 features:                            # ระบบเสริมทั้งหมด - ปิดทีละตัวได้ด้วย enabled: false
+  watchdog:                          # ดับเพลิงเงียบ: ping Healthchecks.io ทุกรอบสแกนสำเร็จ
+    enabled: true                    # เงียบเกินกำหนด = Healthchecks แจ้งเตือนเอง (แก้เหตุการณ์
+    url: ""                          # 26 พ.ย. cron ตายเงียบทั้งเช้า) - ใส่ URL ที่ GitHub Secret
+                                     # ชื่อ HEALTHCHECKS_URL ก็ได้ ไม่ต้องแก้ไฟล์นี้
+  grade_b_quiet: true                # ไม่ยิงการ์ดเกรด B จนกว่าเกรดจะพิสูจน์กำไรจริง
+                                     # (เกรดไปโผล่ใน /stats เพื่อเทียบผลแทน)
   morning_brief:                     # สรุปเช้าทุกวัน 08:00 เวลาไทย + รายงานสัปดาห์วันจันทร์
     enabled: true
     hour: 8                          # ชั่วโมงตามเวลาไทย (ไม่มี DST จึงคงที่)
-    window_minutes: 15               # รอบรันในช่วง 08:00-08:15 จะส่ง 1 ครั้ง/วัน (กันส่งซ้ำด้วย state)
-    ai_brief: true                   # ให้ AI เขียนมุมมองตลาด 2-3 ประโยคในสรุปเช้า
-    weekly: true                     # วันจันทร์แถมรายงานสัปดาห์ + กราฟพอร์ตจำลอง + ข้อเสนอจาก AI
-  morning_outlook:                   # พยากรณ์ทิศทางวันนี้ BTC + ทองคำ 08:00 ไทย (จุดรับ-จุดต้าน + แผนเล่น + กราฟสวย)
+    window_minutes: 15               # หน้าต่างปกติ 08:00-08:15 - แต่ถ้าระบบมาช้ากว่านั้น
+                                     # จะ "ส่งชดเชย" ทันทีที่รอบถัดไปวิ่งได้ (ไม่ข้ามเงียบ ๆ อีก)
+    ai_brief: false                  # เลิกให้ AI เขียนสรุปประจำวัน (งานประจำใช้แม่แบบ ฟรี)
+    weekly: true                     # วันจันทร์แถมรายงานสัปดาห์ + กราฟพอร์ตจำลอง
+  morning_outlook:                   # พยากรณ์ทิศทางเช้า - ปิดตามมติ 3 AI (ตัดความเชื่อมั่นปลอม)
+    enabled: false                   # แทนด้วย "แผน if-then" บนสรุปเช้าแล้ว
+                                     # (เปิดกลับได้ตลอด โค้ดยังอยู่ครบ)
+  commands:                          # คำสั่ง /status /why /levels /history /stats /pause /resume
     enabled: true
-    hour: 8                          # ชั่วโมงตามเวลาไทย
-    window_minutes: 15               # ช่วงรอส่ง (ส่งครั้งเดียว/วัน กันซ้ำด้วย state เหมือนสรุปเช้า)
-    assets:                          # สินทรัพย์ที่อยากได้พยากรณ์ (เพิ่มได้ เช่น XAGUSD, NAS100)
-      - BTCUSDT
-      - XAUUSD
-    send_chart: true                 # แนบกราฟรายวันประกอบ (เส้นจุดรับเขียว - จุดต้านแดง)
-    ai_comment: true                 # ให้ AI เขียนมุมมองเสริม 1-2 ประโยคต่อสินทรัพย์ (ไม่มี key ก็ข้ามไปเอง)
-  commands:                          # คำสั่ง /status /levels /history /stats /pause /resume
-    enabled: true
-  charts:                            # วาดกราฟจังหวะแนบทุกการ์ด
+  charts:                            # วาดกราฟจังหวะแนบทุกการ์ดเข้าได้ตามแผน
     enabled: true
   journal:                           # สมุดจดผลจริง ติดตาม TP/SL ทุกไม้ที่ส่ง
     enabled: true
@@ -126,8 +146,14 @@ features:                            # ระบบเสริมทั้ง�
     enabled: true
     start_equity: 10000.0
     risk_pct: 1.0
+    daily_loss_stop_enabled: true    # สวิตช์กันขาดทุนรายวัน (เกราะป้องกัน ไม่ใช่การเดาผล):
+    daily_loss_stop_r: -3.0          # ไม้จำลองปิดวันนี้รวมแย่กว่า -3R = หยุดส่งการ์ดใหม่
+                                     # จนเที่ยงคืนนี้ (แจ้งเตือนพร้อมวิธีข้าม /resume)
   confluence:                        # ยืนยันข้ามตลาด (Funding/OI คอยน์, DXY ทอง-เงิน-NAS)
     enabled: true
   calendar:                          # เช็คข่าวแรง USD รอบไม้ (FOMC/CPI/NFP ฯลฯ)
     enabled: true
     hours_ahead: 3                   # กรอบเตือน: ข่าวที่จะตกในอีกไม่เกิน 3 ชม.
+  trade_log_webhook:                 # (ทางเลือก) สมุด Google Sheets อัตโนมัติ:
+    enabled: false                   # เอา URL Google Apps Script Web App มาใส่ แล้วระบบจะยิง
+    url: ""                          # JSON ทุกไม้ที่ส่งและทุกไม้ที่ปิดเข้า Sheets ให้เอง

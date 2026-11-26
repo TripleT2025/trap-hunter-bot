@@ -49,6 +49,7 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          HEALTHCHECKS_URL: ${{ secrets.HEALTHCHECKS_URL }}
         run: python main.py
 
       - name: Persist state (cooldown + daily counter)

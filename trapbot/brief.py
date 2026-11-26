@@ -6,10 +6,17 @@
   1. ผู้ใช้เห็นรายงานทุกเช้า = รู้ว่าระบบยังหายใจอยู่เสมอ (heartbeat)
   2. ได้ภาพรวมตลาดเช้าวันจริง: ราคาตอนนี้ เปลี่ยนแปลง 24 ชม. สภาพตลาด กับดักใกล้ตัว ข่าวแรงวันนี้
 
-วันจันทร์มีของแถม (Weekly Report): สถิติสัปดาห์ win-rate/R สุทธิ + พอร์ตจำลองพร้อมกราฟ
-+ "วงจรเรียนรู้": ให้ AI อ่านสถิติแล้วเสนอปรับพารามิเตอร์พร้อมเหตุผล (แค่เสนอ - ไม่แก้เอง)
+อัปเดต 26 พ.ย. 2026 (จากข้อเสนอ 3 AI + เหตุการณ์จริงที่ GitHub cron ตายเงียบทั้งเช้า):
+  - ส่งชดเชยถ้ามาช้า: ถ้ารอบรันของวันนี้ดีดกลับมาหลังหน้าต่าง 08:00-08:15
+    สรุปจะถูกส่งทันทีพร้อมป้าย "ส่งชดเชย" - เลิกโหมด "ข้ามเงียบ ๆ" เดิม
+  - แผนวันนี้เป็น if-then ("ถ้ากวาดระดับนี้แล้วกลับตัว -> รอการ์ดทิศนั้น") แทนการพยากรณ์ทิศ
+  - มี "ใบเสร็จการทำงานเมื่อวาน": เจอกี่จังหวะ ยิงกี่ใบ ตัดเพราะอะไร (จากสมุดกิจวัน)
+  - เลิกใช้ AI เขียนสรุปประจำวัน (ai_brief: false) - งานประจำใช้แม่แบบ ฟรี คงเส้นคงวา
 
-กลไกกันส่งซ้ำ: เก็บวันที่ส่งล่าสุดไว้ใน state (สแกนทุก 5 นาที จะเข้าเงื่อนไขช่วงเช้าหลายรอบ
+วันจันทร์มีของแถม (Weekly Report): สถิติสัปดาห์ win-rate/R สุทธิ + พอร์ตจำลองพร้อมกราฟ
+(ตรงนี้เรียก AI ได้เฉพาะถ้ามีคีย์ - งานนานๆ ครั้ง ไม่ใช่งานประจำ)
+
+กลไกกันส่งซ้ำ: เก็บวันที่ส่งล่าสุดไว้ใน state (สแกนทุก 5 นาที จะเข้าเงื่อนไขเช้าหลายรอบ
 แต่ส่งได้ 1 ครั้ง/วันเท่านั้น)
 """
 import json
@@ -19,7 +26,7 @@ from .data import bangkok_now, fmt_price
 
 
 def maybe_send_brief(cfg: dict, state: dict, tg_cfg: dict, ctx: dict, send_fn, send_photo_fn) -> bool:
-    """ถ้าอยู่ในช่วงเวลาสรุปเช้าและยังไม่ส่งวันนี้ -> ส่งและคืน True"""
+    """ถ้าถึงเวลาสรุปเช้า (หรือมาช้ากว่านั้น) และยังไม่ส่งวันนี้ -> ส่งชดเชยทันทีและคืน True"""
     if not cfg.get("enabled"):
         return False
     try:
@@ -27,11 +34,15 @@ def maybe_send_brief(cfg: dict, state: dict, tg_cfg: dict, ctx: dict, send_fn, s
         hour = int(cfg.get("hour", 8))
         window = int(cfg.get("window_minutes", 15))
         today = now.strftime("%Y-%m-%d")
-        if now.hour != hour or now.minute >= window or state.get("brief_date") == today:
+        if state.get("brief_date") == today:
             return False
+        if now.hour < hour:
+            return False  # ยังไม่ถึงช่วงเช้า - รอรอบถัดไป
+        # ถึงเวลาแล้ว (หรือระบบมาช้า): รอบแรกของวันที่ยังไม่ได้ส่ง = ส่งเลย ไม่ข้ามเงียบ ๆ
+        late = not (now.hour == hour and now.minute < window)
 
         is_monday = now.weekday() == 0
-        text = _compose_brief(cfg, state, ctx)
+        text = _compose_brief(cfg, state, ctx, late)
         if is_monday and cfg.get("weekly", True):
             text += "\n\n" + _weekly_section(state, cfg, tg_cfg)
             png = _weekly_png(state)
@@ -48,11 +59,13 @@ def maybe_send_brief(cfg: dict, state: dict, tg_cfg: dict, ctx: dict, send_fn, s
         return False
 
 
-def _compose_brief(cfg: dict, state: dict, ctx: dict) -> str:
-    """เรียบการ์ดสรุปเช้าจากข้อมูลรอบสแกนล่าสุด - ส่วนหัวเป็นไทยเต็ม มี AI ช่วยเขียนบทสรุป"""
+def _compose_brief(cfg: dict, state: dict, ctx: dict, late: bool = False) -> str:
+    """เรียบการ์ดสรุปเช้าจากข้อมูลรอบสแกนล่าสุด - แผน if-then + ใบเสร็จเมื่อวาน"""
+    from .activity import if_then_plan, receipt_yesterday
     from .calendar import today_summary
 
-    lines = [f"<b>สรุปเช้า Trap Hunter | {bangkok_now().strftime('%d/%m/%Y')}</b>"]
+    head = "สรุปเช้า (ส่งชดเชย - ระบบมาช้ากว่าปกติ)" if late else "สรุปเช้า Trap Hunter"
+    lines = [f"<b>{head} | {bangkok_now().strftime('%d/%m/%Y')}</b>"]
     regimes = ctx.get("regimes") or {}
     if not regimes:
         lines.append("(รอบนี้ดึงข้อมูลตลาดไม่ครบ - ข้อมูลเต็มจะมาในรอบถัดไป)")
@@ -60,6 +73,18 @@ def _compose_brief(cfg: dict, state: dict, ctx: dict) -> str:
         chg = info.get("change_24h")
         chg_s = f" ({chg:+.2f}% 24ชม.)" if chg is not None else ""
         lines.append(f"{info.get('display', asset)}: {fmt_price(info['price'], asset)}{chg_s} | ตลาด{info.get('regime_label', '?')}")
+
+    receipt = receipt_yesterday(state)
+    if receipt:
+        lines.append("")
+        lines.append(receipt)
+
+    plan = if_then_plan(state)
+    if plan:
+        lines.append("")
+        lines.append("แผนวันนี้ แบบ if-then (เห็นอะไรแล้วทำอะไร):")
+        lines.extend(f"  {p}" for p in plan)
+        lines.append("  (ระบบไม่พยากรณ์ทิศทางล่วงหน้า - รอให้ตลาดพิสูจน์ก่อนแล้วจึงยิงการ์ด)")
 
     nearby = state.get("levels_cache") or {}
     if nearby:
@@ -80,45 +105,9 @@ def _compose_brief(cfg: dict, state: dict, ctx: dict) -> str:
         lines.append("")
         lines.append("วันนี้ไม่มีข่าวแรงระดับ High ของ USD")
 
-    ai_summary = _ai_market_summary(cfg, state, ctx)
-    if ai_summary:
-        lines.append("")
-        lines.append(f"<b>มุมมอง AI วันนี้:</b> {ai_summary}")
-
     lines.append("")
-    lines.append("ถึงจะเงียบตลอดวันก็ปกติ - การ์ดจะเด้งทันทีเมื่อจังหวะผ่านครบทุกชั้นยืนยัน (พิมพ์ /status ถามได้ตลอด)")
+    lines.append("ถึงจะเงียบตลอดวันก็ปกติ - การ์ดจะเด้งทันทีเมื่อจังหวะผ่านครบทุกชั้นยืนยัน (พิมพ์ /why ถามได้ตลอดว่าเงียบเพราะอะไร)")
     return "\n".join(lines)
-
-
-def _ai_market_summary(cfg: dict, state: dict, ctx: dict) -> str | None:
-    """ให้ AI เขียนมุมมองตลาด 2-3 ประโยคจากข้อมูลจริง - ไม่มี key / ล้ม = คืน None (ไม่มีผลข้างเคียง)"""
-    try:
-        from .ai_review import ai_text, get_api_key
-
-        if not (cfg.get("ai_brief", True) and get_api_key()):
-            return None
-        facts = [
-            {
-                "asset": info.get("display", asset),
-                "price": round(info["price"], 2) if info.get("price") is not None else None,
-                "change_24h_pct": info.get("change_24h"),
-                "regime": info.get("regime_label"),
-            }
-            for asset, info in (ctx.get("regimes") or {}).items()
-        ]
-        if not facts:
-            return None
-        prompt = (
-            "คุณเป็นนักวิเคราะห์ช่วยเทรดคนไทย ข้อมูลตลาดเช้านี้:\n"
-            + json.dumps(facts, ensure_ascii=False)
-            + "\nเขียนมุมมองภาษาไทย 2-3 ประโยค อ่านง่าย บอกว่าสภาพตลาดรวมเป็นอย่างไร "
-            "ตัวไหนน่าจับตาและเพราะอะไร (เน้นจิตทัศน์ liquidity เช่น ระดับที่แรงซื้อขายอาจไล่ล่า) "
-            "ห้ามให้คำแนะนำลงทุนแบบซื้อ/ขายตรง ๆ ไม่ต้องทักทาย"
-        )
-        return ai_text(cfg.get("ai_cfg") or {}, prompt, max_tokens=350)
-    except Exception as e:
-        print(f"[brief] AI สรุปตลาดพลาด ({e.__class__.__name__})", file=sys.stderr)
-        return None
 
 
 def _weekly_section(state: dict, cfg: dict, tg_cfg: dict) -> str:

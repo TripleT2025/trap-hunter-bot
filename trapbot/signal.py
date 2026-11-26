@@ -148,6 +148,8 @@ def build_signal(hit: dict, levels: list[Level], asset: str, display_name: str, 
         "fast_reclaim": (r - s) == 0,
         "reclaim_bars": int(r - s),
         "delta_ok": hit.get("bias") is not None,
+        # ไส้สุดท้ายของการกวาด = จุดยกเลิกการ์ด (ปิดทะลุตรงนี้ = โครงสร้างกลับตัวพัง)
+        "sweep_extreme": sweep_extreme,
     }
     rng = float(dfc["high"].iloc[s] - dfc["low"].iloc[s])
     if rng > 0:

@@ -9,6 +9,10 @@
   องก์ 3 CONFIRM - แรงซื้อสุทธิ (Delta) ไม่ยอมตามราคาลง + ทิศทางกราฟใหญ่ไม่คัดค้าน
 
 ทุกเงื่อนไขต้องผ่านครบ (AND) พร้อมกัน ถึงจะยิงสัญญาณ - นี่คือสาเหตุที่ได้ 0-2 ไม้/วัน
+
+อัปเดต 26 พ.ย. 2026: จังหวะที่ผ่านโครงสร้าง (กวาด+กลับตัว) แต่ "เกือบผ่าน" ชั้นยืนยัน
+(พลาดชั้นเดียว) ไม่ถูกทิ้งเงียบ ๆ อีกต่อไป - ถูกคืนมาเป็น near_misses เพื่อส่งการ์ดเฝ้าดู
+แบบเงียบ (ไม่มีเสียง) ตามข้อเสนอ 3 AI: ขึ้นให้ดูทุกจังหวะ ไม่ซ่อน แต่ไม่รบกวน
 """
 import numpy as np
 import pandas as pd
@@ -80,12 +84,22 @@ def _find_sweep(df: pd.DataFrame, level: Level, a: float, eng: dict, side: str):
     return None
 
 
+# ข้อความเหตุผลของแต่ละชั้นยืนยัน (ใช้บนการ์ดเฝ้าดู บอกว่า "ยังไม่ยิงเพราะอะไร")
+_FAIL_TH = {
+    "volume": "วอลลุ่มยังไม่หนักพอ (รอแท่งยืนยันหนักกว่านี้)",
+    "guard": "เทียนกวาดใหญ่ผิดปกติ (น่าจะมาจากข่าว ระบบข้ามเทียนยักษ์)",
+    "delta": "แรงซื้อ-ขายสุทธิไม่ยืนยันทิศกลับ",
+    "reclaim": "กลับตัวช้าไป (ไม่ใช่การพุ่งกลับทันทีแบบของจริง)",
+    "trend": "สวนกราฟใหญ่ (ระบบตั้งไม่ให้สวนเทรนด์)",
+}
+
+
 def detect(df: pd.DataFrame, df_htf: pd.DataFrame, levels: list[Level], eng: dict,
-           delta_enabled: bool) -> list[dict]:
-    """ส่งคืนจังหวะสัญญาณทั้งหมดที่ผ่านการยืนยันครบทุกชั้น ณ เทียนล่าสุดที่ปิดแล้ว"""
+           delta_enabled: bool) -> dict:
+    """สแกนเทียนที่ปิดแล้วล่าสุด - คืน {"signals": จังหวะเต็มผ่านครบชั้น, "near_misses": เกือบผ่าน (พลาดชั้นเดียว)}"""
     a = float(atr(df, 14).iloc[-1])
     if not np.isfinite(a) or a <= 0:
-        return []
+        return {"signals": [], "near_misses": []}
     bias = htf_bias(df_htf)
     vol_sma = df["volume"].rolling(20).mean()
     delta = _delta_series(df) if delta_enabled else None
@@ -95,6 +109,7 @@ def detect(df: pd.DataFrame, df_htf: pd.DataFrame, levels: list[Level], eng: dic
     eng.setdefault("min_pierce_atr", 0.05)
 
     found: list[dict] = []
+    near_misses: list[dict] = []
     for level in levels:
         for side in ("BUY", "SELL"):
             res = _find_sweep(df, level, a, eng, side)
@@ -102,41 +117,7 @@ def detect(df: pd.DataFrame, df_htf: pd.DataFrame, levels: list[Level], eng: dic
                 continue
             s, r = res
             dfc = df.iloc[:-1]
-
-            # ---- ชั้นยืนยัน 1: วอลลุ่มต้องมาสนับสนุนจริง ----
-            if not np.isfinite(vol_sma.iloc[s]) or vol_sma.iloc[s] <= 0:
-                continue
-            if dfc["volume"].iloc[s] < eng["volume_mult"] * vol_sma.iloc[s]:
-                continue
-
-            # ---- ชั้นยืนยัน 2: กันข่าวแรงเกิน (เทียนยักษ์ = เดิมพันคลาดเคลื่อน) ----
-            rng = dfc["high"].iloc[s] - dfc["low"].iloc[s]
-            if rng > eng["vol_guard_atr"] * a:
-                continue
-
-            # ---- ชั้นยืนยัน 3: แรงซื้อ/ขายสุทธิยืนยัน หรือ (ทอง) ต้องกลับตัวเร็วพิเศษ ----
-            if delta_enabled and delta is not None:
-                d_s = delta.iloc[s]
-                d_r = delta.iloc[r]
-                if side == "BUY":
-                    ok = (d_s > 0) or (d_r > 0)  # ราคาลงแต่แรงซื้อสุทธิยังบวก = มีคนดูดของ
-                else:
-                    ok = (d_s < 0) or (d_r < 0)
-                if not ok:
-                    continue
-            else:
-                # ทอง (ไม่มีข้อมูล delta): ต้อง reclaim เร็วเป็นพิเศษ ภายใน 1-2 แท่ง
-                if (r - s) > 1:
-                    continue
-
-            # ---- ชั้นยืนยัน 4: ทิศทางกราฟใหญ่ไม่คัดค้าน ----
-            if not eng["allow_counter_trend"]:
-                if side == "BUY" and bias == "DOWN":
-                    continue
-                if side == "SELL" and bias == "UP":
-                    continue
-
-            found.append({
+            base = {
                 "side": side,
                 "level": level,
                 "sweep_idx": s,
@@ -144,5 +125,51 @@ def detect(df: pd.DataFrame, df_htf: pd.DataFrame, levels: list[Level], eng: dic
                 "atr": a,
                 "bias": bias,
                 "df": df,
-            })
-    return found
+            }
+
+            # ประเมินทุกชั้นยืนยัน แล้วจดว่าพลาดชั้นไหน (จังหวะเกือบผ่าน = พลาดชั้นเดียว)
+            fails: list[str] = []
+
+            # ---- ชั้นยืนยัน 1: วอลลุ่มต้องมาสนับสนุนจริง ----
+            vol_ok = np.isfinite(vol_sma.iloc[s]) and vol_sma.iloc[s] > 0 and \
+                dfc["volume"].iloc[s] >= eng["volume_mult"] * vol_sma.iloc[s]
+            if not vol_ok:
+                fails.append("volume")
+
+            # ---- ชั้นยืนยัน 2: กันข่าวแรงเกิน (เทียนยักษ์ = เดิมพันคลาดเคลื่อน) ----
+            rng = float(dfc["high"].iloc[s] - dfc["low"].iloc[s])
+            if rng > eng["vol_guard_atr"] * a:
+                fails.append("guard")
+
+            # ---- ชั้นยืนยัน 3: แรงซื้อ/ขายสุทธิยืนยัน หรือ (ทอง) ต้องกลับตัวเร็วพิเศษ ----
+            if delta_enabled and delta is not None:
+                d_s = delta.iloc[s]
+                d_r = delta.iloc[r]
+                if side == "BUY":
+                    delta_ok = (d_s > 0) or (d_r > 0)  # ราคาลงแต่แรงซื้อสุทธิยังบวก = มีคนดูดของ
+                else:
+                    delta_ok = (d_s < 0) or (d_r < 0)
+                if not delta_ok:
+                    fails.append("delta")
+            else:
+                # ทอง (ไม่มีข้อมูล delta): ต้อง reclaim เร็วเป็นพิเศษ ภายใน 1-2 แท่ง
+                if (r - s) > 1:
+                    fails.append("reclaim")
+
+            # ---- ชั้นยืนยัน 4: ทิศทางกราฟใหญ่ไม่คัดค้าน ----
+            trend_ok = eng["allow_counter_trend"] or not (
+                (side == "BUY" and bias == "DOWN") or (side == "SELL" and bias == "UP")
+            )
+            if not trend_ok:
+                fails.append("trend")
+
+            if fails:
+                if len(fails) == 1:
+                    item = dict(base)
+                    item["fail"] = fails[0]
+                    item["fail_th"] = _FAIL_TH.get(fails[0], fails[0])
+                    near_misses.append(item)
+                continue
+
+            found.append(base)
+    return {"signals": found, "near_misses": near_misses}
