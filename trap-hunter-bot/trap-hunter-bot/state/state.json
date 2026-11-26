@@ -1,0 +1,15 @@
+{
+ "last_signal": {},
+ "daily": {},
+ "journal": [],
+ "levels_cache": {},
+ "regime_cache": {},
+ "paper": {
+  "start": 10000.0,
+  "equity": 10000.0,
+  "risk_pct": 1.0,
+  "positions": {},
+  "equity_curve": [],
+  "closed": []
+ }
+}
