@@ -2,8 +2,73 @@
  "last_signal": {},
  "daily": {},
  "journal": [],
- "levels_cache": {},
- "regime_cache": {},
+ "levels_cache": {
+  "BTCUSDT": [
+   "PDH 60,568",
+   "EQL 60,527",
+   "EQL 60,621"
+  ],
+  "XAUUSD": [
+   "ROUND 3,620.0",
+   "EQL 3,618.3",
+   "EQH 3,623.6"
+  ],
+  "XAGUSD": [
+   "EQL 42.12",
+   "EQL 42.03",
+   "EQL 41.98"
+  ],
+  "SOLUSDT": [
+   "EQH 70.90",
+   "FVG_BULL 70.82",
+   "EQH 70.97"
+  ],
+  "XRPUSDT": [
+   "EQH 0.9551",
+   "FVG_BULL 0.9499",
+   "FVG_BEAR 0.9570"
+  ],
+  "WTIUSD": [
+   "EQH 84.48",
+   "PDH 84.27",
+   "FVG_BULL 84.20"
+  ],
+  "NAS100": [
+   "ROUND 26,400.0",
+   "EQL 26,369.4",
+   "FVG_BULL 26,361.0"
+  ]
+ },
+ "regime_cache": {
+  "BTCUSDT": {
+   "regime": "NORMAL",
+   "display": "BTC/USDT"
+  },
+  "XAUUSD": {
+   "regime": "NORMAL",
+   "display": "ทองคำ (XAUUSD)"
+  },
+  "XAGUSD": {
+   "regime": "NORMAL",
+   "display": "เงิน (XAGUSD)"
+  },
+  "SOLUSDT": {
+   "regime": "NORMAL",
+   "display": "Solana (SOL/USDT)"
+  },
+  "XRPUSDT": {
+   "regime": "NORMAL",
+   "display": "XRP/USDT"
+  },
+  "WTIUSD": {
+   "regime": "NORMAL",
+   "display": "น้ำมันดิบ (WTI)"
+  },
+  "NAS100": {
+   "regime": "NORMAL",
+   "display": "NAS100 (NQ=F)"
+  }
+ },
  "paper": {
   "start": 10000.0,
   "equity": 10000.0,
@@ -11,5 +76,187 @@
   "positions": {},
   "equity_curve": [],
   "closed": []
- }
+ },
+ "events": {},
+ "watch_events": {
+  "BTCUSDT|BUY|60460.88|202611260700": "2026-11-26T08:15:35.125049+00:00",
+  "BTCUSDT|BUY|60568.01|202611260800": "2026-11-26T08:15:35.815804+00:00",
+  "XAUUSD|BUY|3602.30|202611260400": "2026-11-26T08:15:36.494847+00:00",
+  "XAUUSD|SELL|3602.30|202611260345": "2026-11-26T08:15:37.139132+00:00",
+  "XAGUSD|BUY|41.91|202611260330": "2026-11-26T08:15:37.865477+00:00",
+  "XAGUSD|SELL|41.91|202611260345": "2026-11-26T08:15:38.518120+00:00",
+  "SOLUSDT|BUY|70.56|202611260645": "2026-11-26T08:15:41.145071+00:00",
+  "SOLUSDT|BUY|70.82|202611260700": "2026-11-26T08:15:41.786843+00:00",
+  "WTIUSD|BUY|84.27|202611260400": "2026-11-26T08:15:43.969647+00:00",
+  "NAS100|BUY|26300.00|202611260315": "2026-11-26T08:15:44.702920+00:00",
+  "NAS100|BUY|26320.50|202611260330": "2026-11-26T08:15:45.394600+00:00"
+ },
+ "missed": [
+  {
+   "ts": "2026-11-26T08:15:43.969728+00:00",
+   "display": "น้ำมันดิบ (WTI)",
+   "side": "BUY",
+   "level_kind": "FVG_BULL",
+   "price": 84.20000076293945,
+   "reason": "หมดเวลา (แท่งยืนยันปิดมาแล้ว 301 นาที > 30 นาที)"
+  }
+ ],
+ "watch_log": [
+  {
+   "ts": "2026-11-26T08:15:35.125021+00:00",
+   "display": "BTC/USDT",
+   "side": "BUY",
+   "level_kind": "EQL",
+   "price": 60460.875,
+   "fail": "วอลลุ่มยังไม่หนักพอ (รอแท่งยืนยันหนักกว่านี้)"
+  },
+  {
+   "ts": "2026-11-26T08:15:35.815780+00:00",
+   "display": "BTC/USDT",
+   "side": "BUY",
+   "level_kind": "PDH",
+   "price": 60568.01,
+   "fail": "วอลลุ่มยังไม่หนักพอ (รอแท่งยืนยันหนักกว่านี้)"
+  },
+  {
+   "ts": "2026-11-26T08:15:36.494820+00:00",
+   "display": "ทองคำ (XAUUSD)",
+   "side": "BUY",
+   "level_kind": "FVG_BULL",
+   "price": 3602.300048828125,
+   "fail": "วอลลุ่มยังไม่หนักพอ (รอแท่งยืนยันหนักกว่านี้)"
+  },
+  {
+   "ts": "2026-11-26T08:15:37.139103+00:00",
+   "display": "ทองคำ (XAUUSD)",
+   "side": "SELL",
+   "level_kind": "FVG_BULL",
+   "price": 3602.300048828125,
+   "fail": "วอลลุ่มยังไม่หนักพอ (รอแท่งยืนยันหนักกว่านี้)"
+  },
+  {
+   "ts": "2026-11-26T08:15:37.865447+00:00",
+   "display": "เงิน (XAGUSD)",
+   "side": "BUY",
+   "level_kind": "EQH",
+   "price": 41.90625,
+   "fail": "วอลลุ่มยังไม่หนักพอ (รอแท่งยืนยันหนักกว่านี้)"
+  },
+  {
+   "ts": "2026-11-26T08:15:38.518088+00:00",
+   "display": "เงิน (XAGUSD)",
+   "side": "SELL",
+   "level_kind": "EQH",
+   "price": 41.90625,
+   "fail": "วอลลุ่มยังไม่หนักพอ (รอแท่งยืนยันหนักกว่านี้)"
+  },
+  {
+   "ts": "2026-11-26T08:15:41.145041+00:00",
+   "display": "Solana (SOL/USDT)",
+   "side": "BUY",
+   "level_kind": "EQH",
+   "price": 70.555,
+   "fail": "วอลลุ่มยังไม่หนักพอ (รอแท่งยืนยันหนักกว่านี้)"
+  },
+  {
+   "ts": "2026-11-26T08:15:41.786813+00:00",
+   "display": "Solana (SOL/USDT)",
+   "side": "BUY",
+   "level_kind": "FVG_BULL",
+   "price": 70.82,
+   "fail": "วอลลุ่มยังไม่หนักพอ (รอแท่งยืนยันหนักกว่านี้)"
+  },
+  {
+   "ts": "2026-11-26T08:15:43.969624+00:00",
+   "display": "น้ำมันดิบ (WTI)",
+   "side": "BUY",
+   "level_kind": "PDH",
+   "price": 84.2699966430664,
+   "fail": "วอลลุ่มยังไม่หนักพอ (รอแท่งยืนยันหนักกว่านี้)"
+  },
+  {
+   "ts": "2026-11-26T08:15:44.702894+00:00",
+   "display": "NAS100 (NQ=F)",
+   "side": "BUY",
+   "level_kind": "ROUND",
+   "price": 26300,
+   "fail": "วอลลุ่มยังไม่หนักพอ (รอแท่งยืนยันหนักกว่านี้)"
+  },
+  {
+   "ts": "2026-11-26T08:15:45.394573+00:00",
+   "display": "NAS100 (NQ=F)",
+   "side": "BUY",
+   "level_kind": "FVG_BULL",
+   "price": 26320.5,
+   "fail": "วอลลุ่มยังไม่หนักพอ (รอแท่งยืนยันหนักกว่านี้)"
+  }
+ ],
+ "active_cards": {},
+ "daily_ledger": {
+  "2026-11-26": {
+   "seen": 1,
+   "watch": 11,
+   "actionable": 0,
+   "sent": 0,
+   "missed": {
+    "หมดเวลา": 1
+   },
+   "missed_total": 1,
+   "paper_closed_r": 0.0,
+   "paper_closed_n": 0,
+   "seen_keys": [
+    "WTIUSD|BUY|84.20|202611260315"
+   ]
+  }
+ },
+ "scan_ctx": {
+  "scanned_at": "2026-11-26T08:15:44.010269+00:00",
+  "regimes": {
+   "BTCUSDT": {
+    "display": "BTC/USDT",
+    "regime_label": "ปกติ",
+    "price": 60572.0,
+    "change_24h": 2.51
+   },
+   "XAUUSD": {
+    "display": "ทองคำ (XAUUSD)",
+    "regime_label": "ปกติ",
+    "price": 3620.39990234375,
+    "change_24h": 1.79
+   },
+   "XAGUSD": {
+    "display": "เงิน (XAGUSD)",
+    "regime_label": "ปกติ",
+    "price": 42.084999084472656,
+    "change_24h": 3.7
+   },
+   "SOLUSDT": {
+    "display": "Solana (SOL/USDT)",
+    "regime_label": "ปกติ",
+    "price": 70.87,
+    "change_24h": 4.65
+   },
+   "XRPUSDT": {
+    "display": "XRP/USDT",
+    "regime_label": "ปกติ",
+    "price": 0.9532,
+    "change_24h": 4.06
+   },
+   "WTIUSD": {
+    "display": "น้ำมันดิบ (WTI)",
+    "regime_label": "ปกติ",
+    "price": 84.41999816894531,
+    "change_24h": 3.58
+   },
+   "NAS100": {
+    "display": "NAS100 (NQ=F)",
+    "regime_label": "ปกติ",
+    "price": 26389.75,
+    "change_24h": 2.75
+   }
+  }
+ },
+ "last_ok_scan": "2026-11-26T08:15:46.217244+00:00",
+ "loss_stop_date": null,
+ "brief_date": "2026-11-26"
 }
