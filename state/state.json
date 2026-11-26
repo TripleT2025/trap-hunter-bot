@@ -9,10 +9,11 @@
   "XAGUSD|SELL|39.48": "2026-11-25T16:03:11.131722+00:00",
   "WTIUSD|BUY|83.22": "2026-11-25T16:03:20.802785+00:00",
   "NAS100|SELL|25400.00": "2026-11-25T16:03:27.720568+00:00",
-  "NAS100|BUY|25998.00": "2026-11-26T00:11:58.516654+00:00"
+  "NAS100|BUY|25998.00": "2026-11-26T00:11:58.516654+00:00",
+  "XAGUSD|BUY|41.91": "2026-11-26T03:19:00.083792+00:00"
  },
  "daily": {
-  "2026-11-26": 1
+  "2026-11-26": 2
  },
  "journal": [
   {
@@ -150,43 +151,60 @@
    "realized_r": 1.0,
    "outcome": "TP3",
    "closed_ts": "2026-11-26T00:12:02.968490+00:00"
+  },
+  {
+   "ts": "2026-11-26T03:19:05.112349+00:00",
+   "asset": "XAGUSD",
+   "display": "เงิน (XAGUSD)",
+   "side": "BUY",
+   "entry": 42.4,
+   "sl": 41.74,
+   "tp1": 43.0,
+   "tp2": 43.7,
+   "tp3": 44.88,
+   "level_kind": "EQH",
+   "grade": "B",
+   "cur_sl": 41.74,
+   "realized_r": 0.0,
+   "outcome": "OPEN",
+   "closed_ts": null
   }
  ],
  "levels_cache": {
   "BTCUSDT": [
-   "SESSION_HIGH 60,661",
-   "EQL 60,622",
-   "EQH 60,689"
+   "EQL 60,765",
+   "EQH 60,689",
+   "EQL 60,621"
   ],
   "XAUUSD": [
-   "ROUND 3,600.0",
-   "EQH 3,596.7",
-   "SESSION_HIGH 3,604.2"
+   "ROUND 3,610.0",
+   "EQL 3,612.3",
+   "EQL 3,605.5"
   ],
   "XAGUSD": [
-   "EQL 41.65",
-   "SESSION_HIGH 41.68",
-   "ROUND 41.50"
+   "EQL 41.98",
+   "EQL 42.03",
+   "EQH 41.91"
   ],
   "SOLUSDT": [
-   "SESSION_HIGH 70.84",
-   "EQH 70.90",
-   "EQH 70.73"
+   "PDH 71.07",
+   "EQH 70.98",
+   "EQL 71.46"
   ],
   "XRPUSDT": [
-   "SESSION_HIGH 0.9412",
-   "EQH 0.9434",
-   "EQL 0.9387"
+   "EQH 0.9551",
+   "SESSION_HIGH 0.9609",
+   "FVG_BULL 0.9538"
   ],
   "WTIUSD": [
    "ROUND 84.00",
-   "SESSION_HIGH 84.03",
-   "EQH 83.91"
+   "EQH 83.91",
+   "EQH 83.84"
   ],
   "NAS100": [
-   "EQL 26,121.5",
-   "EQL 26,139.0",
-   "EQL 26,091.6"
+   "ROUND 26,300.0",
+   "EQH 26,352.8",
+   "EQL 26,271.6"
   ]
  },
  "regime_cache": {
@@ -223,7 +241,23 @@
   "start": 10000.0,
   "equity": 10069.61,
   "risk_pct": 1.0,
-  "positions": {},
+  "positions": {
+   "XAGUSD": {
+    "ts": "2026-11-26T03:19:05.112381+00:00",
+    "side": "BUY",
+    "entry": 42.4,
+    "sl": 41.74,
+    "tp1": 43.0,
+    "tp2": 43.7,
+    "tp3": 44.88,
+    "cur_sl": 41.74,
+    "realized_r": 0.0,
+    "outcome": "OPEN",
+    "risk_usd": 100.7,
+    "grade": "B",
+    "display": "เงิน (XAGUSD)"
+   }
+  },
   "equity_curve": [
    [
     "2026-11-25T01:11:12.719886+00:00",
